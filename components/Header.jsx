@@ -1,15 +1,18 @@
+
 import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from '@clerk/nextjs'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 import { Button } from './ui/button'
 import { ChevronDown, FileText, GraduationCap, LayoutDashboard, PenBox, StarsIcon } from 'lucide-react'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from './ui/dropdown-menu'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuIte, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu'
+import { CheckUser } from '@/lib/CheckUser'
 
-const Header = () => {
+const Header = async() => {
+  await CheckUser();
   return ( 
-    <header className='fixed w-full bg-background/80 top-0'>
-      <nav className='container mx-auto h-16 px-4 flex items-center justify-between'>
+    <header className="fixed top-0 w-full border-b bg-background/80 backdrop-blur-md z-50 supports-backdrop-filter:bg-background/60">
+      <nav className="container mx-auto px-4 h-16 flex items-center justify-between">
         <Link href='/'>
        <Image src={'/logo.png'} alt='sensai logi' width={100} height={100} className='px-2 h-12 py-1 w-auto object-contain'></Image>
         
