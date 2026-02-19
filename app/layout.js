@@ -5,6 +5,7 @@ import { Footer } from "react-day-picker";
 import Header from "@/components/Header";
 import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,6 +39,7 @@ export default function RootLayout({ children }) {
           >
             <Header/>
             <main className="min-h-screen">{children}</main>
+            <Toaster richColors/>
             {/* footer */}
             <Footer className="bg-muted/50 py-12">
               <div className="container px-4 mx-auto text-center">

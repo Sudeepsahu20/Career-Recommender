@@ -14,7 +14,7 @@ const Header = async() => {
     <header className="fixed top-0 w-full border-b bg-background/80 backdrop-blur-md z-50 supports-backdrop-filter:bg-background/60">
       <nav className="container mx-auto px-4 h-16 flex items-center justify-between">
         <Link href='/'>
-       <Image src={'/logo.png'} alt='sensai logi' width={100} height={100} className='px-2 h-12 py-1 w-auto object-contain'></Image>
+       <Image src={'/career.png'} alt='career logi' width={100} height={100} className='px-2 h-12 py-1 w-auto object-contain'></Image>
         
         </Link>
 

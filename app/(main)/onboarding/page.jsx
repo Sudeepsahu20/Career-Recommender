@@ -5,9 +5,9 @@ import { getUserOnboardingStatus } from '@/actions/user';
 import { redirect } from 'next/navigation';
 
 const OnboardingPage =async () => {
-    const {isOnboarding} =await getUserOnboardingStatus();
+    const {isOnboarded} =await getUserOnboardingStatus();
     
-    if(isOnboarding){
+    if(isOnboarded){
         redirect('/dashboard');
     }
   return (

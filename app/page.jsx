@@ -1,7 +1,7 @@
 import HeroSection from "@/components/HeroSection";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, } from "@/components/ui/card";
 import { faqs } from "@/data/faqs";
 import { features } from "@/data/features";
 import { howItWorks } from "@/data/howItWorks";
