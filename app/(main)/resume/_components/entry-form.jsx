@@ -52,7 +52,7 @@ const EntryForm = ({type,entries,onChange}) => {
         const newEntries=entries.filter((_,i)=> i!==index);
         onChange(newEntries);
     }
-
+     
 
       //this feature was implemented by me 
     const handleImproveDescription=async()=>{

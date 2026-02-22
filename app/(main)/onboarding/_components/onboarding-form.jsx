@@ -177,7 +177,7 @@ console.error("Onboarding error",error.message);
                 placeholder="Tell us something about yourself..."
                 {...register("bio")}
               />
-              {/* <p className="text-sm text-muted-foreground">Seperate multiple skills with commas</p> */}
+              <p className="text-sm text-muted-foreground">Seperate multiple skills with commas</p>
               {errors.bio && (
                 <p className="text-sm text-red-600">
                   {errors.bio.message}

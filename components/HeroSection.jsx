@@ -1,11 +1,11 @@
-'use client'
+"use client";
 import React, { useEffect, useRef } from "react";
-import { Button } from "./ui/button";
-import { Link } from "lucide-react";
 import Image from "next/image";
+import { Button } from "./ui/button";
+import Link from "next/link";
 
 const HeroSection = () => {
- const imageRef = useRef(null);
+  const imageRef = useRef(null);
 
   useEffect(() => {
     const imageElement = imageRef.current;
@@ -30,13 +30,14 @@ const HeroSection = () => {
       <div className="space-y-6 text-center">
         <div className="space-y-6 mx-auto">
           <h1 className="text-5xl font-bold md:text-6xl lg:text-7xl xl:text-8xl gradient-title animate-gradient">
-            Your AI Career Coach for
+            Unlock Your Career Potential
             <br />
-            Professional Success
+            with AI
           </h1>
           <p className="mx-auto max-w-150 text-muted-foreground md:text-xl">
-            Advance your career with personalized guidance, interview prep, and
-            AI-powered tools for job success.
+            From tailored career advice to interview mastery and intelligent job
+            application tools — accelerate your growth and stand out in today’s
+            competitive market.
           </p>
         </div>
         <div className="flex justify-center space-x-4">
@@ -45,7 +46,7 @@ const HeroSection = () => {
               Get Started
             </Button>
           </Link>
-          <Link href="https://www.youtube.com/roadsidecoder">
+          <Link href="https://github.com/Sudeepsahu20">
             <Button size="lg" variant="outline" className="px-8">
               Watch Demo
             </Button>
@@ -54,7 +55,7 @@ const HeroSection = () => {
         <div className="hero-image-wrapper mt-5 md:mt-0">
           <div ref={imageRef} className="hero-image">
             <Image
-              src="/banner.jpeg"
+              src="/myResume.png"
               width={1280}
               height={720}
               alt="Dashboard Preview"

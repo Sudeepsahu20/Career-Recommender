@@ -61,8 +61,6 @@ export async function getIndustryInsights(){
             industryInsight:true
         }
       })
-
-      console.log("my user is thsis",user);
     
       if(!user) throw new Error("User not found");
        

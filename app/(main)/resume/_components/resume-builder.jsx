@@ -8,14 +8,14 @@ import { Textarea } from "@/components/ui/textarea";
 import useFetch from "@/hooks/useFetch";
 import { Input } from "@base-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AlertTriangle, Download, Edit, Loader2, Monitor, Save } from "lucide-react";
+import { AlertTriangle, Download, Edit, Loader2, Monitor, Save, Sparkles } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import EntryForm from "./entry-form";
 import { entriesToMarkdown } from "@/app/lib/helper";
 import { useUser } from "@clerk/nextjs";
-import html2pdf from "html2pdf.js/dist/html2pdf.min.js";
-import ReactMarkdown from "react-markdown";
+import html2pdf from "html2pdf.js";
+
 
 const ResumeBuilder = ({ initialContent }) => {
   const [activeTab, setActiveTab] = useState("edit");
@@ -23,6 +23,7 @@ const ResumeBuilder = ({ initialContent }) => {
   const [previewContent,setPreviewContent]=useState(initialContent);
   const {user}=useUser();
   const [isGenerating,setIsGenerating]=useState(false);
+  console.log("resimeee",initialContent);
 
   const {
     control,
@@ -43,6 +44,7 @@ const ResumeBuilder = ({ initialContent }) => {
   });
 
   const formValues = watch();
+
 const {summary,skills,experience,education,projects} = formValues;
   const getContactMarkdown = () => {
     const { contactInfo } = formValues;
@@ -54,7 +56,7 @@ const {summary,skills,experience,education,projects} = formValues;
     if (contactInfo.twitter) parts.push(`🐦 [Twitter](${contactInfo.twitter})`);
 
     return parts.length > 0
-      ? `## <div align="center">${user.fullName}</div>
+      ? `## <div align="center">${user?.fullName}</div>
         \n\n<div align="center">\n\n${parts.join(" | ")}\n\n</div>`
       : "";
   };
@@ -64,7 +66,7 @@ const {summary,skills,experience,education,projects} = formValues;
       const newContent = getCombinedContent();
       setPreviewContent(newContent ? newContent : initialContent);
     }
-
+ 
 
   }, [formValues, activeTab]);
  const getCombinedContent=()=>{
@@ -93,7 +95,7 @@ const {summary,skills,experience,education,projects} = formValues;
 
   try {
     const opt = {
-      margin: [15, 15],
+      margin: 1,
       filename: "resume.pdf",
       image: { type: "jpeg", quality: 0.98 },
       html2canvas: {
@@ -102,8 +104,8 @@ const {summary,skills,experience,education,projects} = formValues;
         logging: false,
       },
       jsPDF: {
-        unit: "mm",
-        format: "a4",
+        unit: "in",
+        format: "letter",
         orientation: "portrait",
       },
       pagebreak: { mode: ["avoid-all", "css", "legacy"] },
@@ -184,7 +186,7 @@ const {summary,skills,experience,education,projects} = formValues;
                   <Input
                     {...register("contactInfo.mobile")}
                     type="tel"
-                    placeholder="+1 234 567 8900"
+                    placeholder="+1 2345 67890"
                   />
                   {errors.contactInfo?.mobile && (
                     <p className="text-sm text-red-500">
@@ -240,6 +242,7 @@ const {summary,skills,experience,education,projects} = formValues;
               {errors.summary && (
                 <p className="text-sm text-red-500">{errors.summary.message}</p>
               )}
+               <Button variant="outline">Improve with ai</Button>
             </div>
 
             <div className="space-y-4">
@@ -360,27 +363,18 @@ const {summary,skills,experience,education,projects} = formValues;
               preview={resumeMode}
             />
           </div>
-
-          <div
-  style={{
-    position: "absolute",
-    left: "-9999px",
-    top: "0",
-  }}
->
-  <div
-    id="resume-pdf"
-    style={{
-      width: "210mm",
-      minHeight: "297mm",
-      padding: "20mm",
-      backgroundColor: "#ffffff",
-      color: "#000000",
-    }}
-  >
-   <ReactMarkdown>{previewContent}</ReactMarkdown>
-  </div>
-</div>
+          <div className="hidden">
+            <div id="resume-pdf">
+              <MDEditor.Markdown
+                source={previewContent}
+                style={{
+                  background: "white",
+                  color: "black",
+                }}
+              />
+            </div>
+          </div>
+        
         </TabsContent>
       </Tabs>
     </div>
