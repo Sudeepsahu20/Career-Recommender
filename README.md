@@ -1,36 +1,108 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+🚀 Career Recommender
 
-## Getting Started
+An AI-powered career recommendation and resume-building platform that helps users discover suitable career paths based on their interests, skills, and goals.
 
-First, run the development server:
+Built with modern full-stack technologies and secure authentication.
 
-```bash
+🌟 Live Demo
+
+🔗 https://career-recommender-blond.vercel.app
+
+📌 Features
+
+🔐 Secure Authentication using Clerk
+
+🤖 AI-powered career recommendations
+
+🧠 Smart resume builder
+
+📄 Dynamic content generation
+
+🗂 Industry-based onboarding system
+
+💾 Database integration with PostgreSQL
+
+⚡ Fast and optimized Next.js App Router setup
+
+🌍 Fully deployed on Vercel
+
+🛠 Tech Stack
+🖥 Frontend
+
+Next.js (App Router)
+
+React
+
+TypeScript
+
+Tailwind CSS
+
+⚙ Backend
+
+Next.js Server Components
+
+Server Actions
+
+Prisma ORM
+
+🗄 Database
+
+PostgreSQL (Neon Database)
+
+Connection pooling enabled
+
+SSL secured connection
+
+🔐 Authentication
+
+Clerk Authentication
+
+Protected routes
+
+Middleware-based auth handling
+
+🤖 AI Integration
+
+Gemini API (for AI-based career recommendations & content generation)
+
+☁ Deployment
+
+Vercel (Production hosting)
+
+Environment variables configured securely
+
+📂 Project Structure
+/app
+/actions
+/components
+/lib
+/prisma
+/data
+
+/actions → Server actions for database & business logic
+
+/lib → Prisma client setup
+
+/prisma → Schema & migrations
+
+/components → Reusable UI components
+
+🔑 Environment Variables Required
+DATABASE_URL=
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+CLERK_SECRET_KEY=
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=
+GEMINI_API_KEY=
+⚡ Getting Started (Run Locally)
+git clone https://github.com/Sudeepsahu20/Career-Recommender.git
+cd Career-Recommender
+npm install
+npx prisma generate
+npx prisma migrate dev
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+App will run on:
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+http://localhost:3000
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
