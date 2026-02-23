@@ -8,13 +8,15 @@ import { Textarea } from "@/components/ui/textarea";
 import useFetch from "@/hooks/useFetch";
 import { Input } from "@base-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AlertTriangle, Download, Edit, Loader2, Monitor, Save, Sparkles } from "lucide-react";
+import { AlertTriangle, Download, Edit, Loader2, Monitor, Save } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import EntryForm from "./entry-form";
 import { entriesToMarkdown } from "@/app/lib/helper";
 import { useUser } from "@clerk/nextjs";
 import html2pdf from "html2pdf.js";
+import { marked } from "marked";
+import { toast } from "sonner";
 
 
 const ResumeBuilder = ({ initialContent }) => {
@@ -23,7 +25,6 @@ const ResumeBuilder = ({ initialContent }) => {
   const [previewContent,setPreviewContent]=useState(initialContent);
   const {user}=useUser();
   const [isGenerating,setIsGenerating]=useState(false);
-  console.log("resimeee",initialContent);
 
   const {
     control,
@@ -60,6 +61,22 @@ const {summary,skills,experience,education,projects} = formValues;
         \n\n<div align="center">\n\n${parts.join(" | ")}\n\n</div>`
       : "";
   };
+
+    const {
+    loading: isSaving,
+    data: saveResult,
+    errror: saveError,
+    fun: saveResumeFn,
+  } = useFetch(saveResume);
+
+  useEffect(() => {
+    if (saveResult && !isSaving) {
+      toast.success("Resume saved successfully!");
+    }
+    if (saveError) {
+      toast.error(saveError.message || "Failed to save resume");
+    }
+  }, [saveResult, saveError, isSaving]);
    
   useEffect(() => {
     if (activeTab === "edit") {
@@ -98,11 +115,12 @@ const {summary,skills,experience,education,projects} = formValues;
       margin: 1,
       filename: "resume.pdf",
       image: { type: "jpeg", quality: 0.98 },
-      html2canvas: {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-      },
+     html2canvas: {
+  scale: 2,
+  useCORS: true,
+  logging: false,
+  backgroundColor: "#ffffff",
+},
       jsPDF: {
         unit: "in",
         format: "letter",
@@ -119,14 +137,16 @@ const {summary,skills,experience,education,projects} = formValues;
   }
 };
 
-  const onSubmit = () => {};
+  const onSubmit = async() => {
+    try{
+     
+     await saveResumeFn({ content: previewContent });
+    } catch (error) {
+      console.error("Save error:", error);
+    }
+  };
 
-  const {
-    loading: isSaving,
-    data: saveResult,
-    errror: saveError,
-    fun: saveResumeFn,
-  } = useFetch(saveResume);
+
 
   useEffect(() => {
     if (initialContent) setActiveTab("preview");
@@ -140,10 +160,23 @@ const {summary,skills,experience,education,projects} = formValues;
         </h1>
 
         <div className="space-x-2">
-          <Button variant="destructive">
-            <Save className="h-4 w-4" />
-            Save
-          </Button>
+          <Button
+            variant="destructive"
+            onClick={onSubmit}
+            disabled={isSaving}
+          >
+            {isSaving ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Saving...
+              </>
+            ) : (
+              <>
+                <Save className="h-4 w-4" />
+                Save
+              </>
+            )}
+            </Button>
           <Button onClick={generatePdf} disabled={isGenerating}>
             {isGenerating ? (<>
             <Loader2 className="h-4 w-4 animate-spin"/>
@@ -162,17 +195,19 @@ const {summary,skills,experience,education,projects} = formValues;
           <TabsTrigger value="preview">MarkDown</TabsTrigger>
         </TabsList>
         <TabsContent value="edit">
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+          <form  className="space-y-8">
             {/* Contact Information */}
             <div className="space-y-4">
               <h3 className="text-lg font-medium">Contact Information</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 border rounded-lg bg-muted/50">
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Email</label>
+                  <br />
                   <Input
                     {...register("contactInfo.email")}
                     type="email"
-                    placeholder="your@email.com"
+                    className='w-full'
+                    placeholder="youremail@email.com"
                     error={errors.contactInfo?.email}
                   />
                   {errors.contactInfo?.email && (
@@ -183,10 +218,12 @@ const {summary,skills,experience,education,projects} = formValues;
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Mobile Number</label>
+                 <br />
                   <Input
                     {...register("contactInfo.mobile")}
+                     className='w-full'
                     type="tel"
-                    placeholder="+1 2345 67890"
+                    placeholder="+91 2345 67890"
                   />
                   {errors.contactInfo?.mobile && (
                     <p className="text-sm text-red-500">
@@ -196,9 +233,11 @@ const {summary,skills,experience,education,projects} = formValues;
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium">LinkedIn URL</label>
+                  <br />
                   <Input
                     {...register("contactInfo.linkedin")}
                     type="url"
+                     className='w-full'
                     placeholder="https://linkedin.com/in/your-profile"
                   />
                   {errors.contactInfo?.linkedin && (
@@ -211,8 +250,10 @@ const {summary,skills,experience,education,projects} = formValues;
                   <label className="text-sm font-medium">
                     Twitter/X Profile
                   </label>
+                  <br />
                   <Input
                     {...register("contactInfo.twitter")}
+                     className='w-full'
                     type="url"
                     placeholder="https://twitter.com/your-handle"
                   />
@@ -363,17 +404,23 @@ const {summary,skills,experience,education,projects} = formValues;
               preview={resumeMode}
             />
           </div>
-          <div className="hidden">
-            <div id="resume-pdf">
-              <MDEditor.Markdown
-                source={previewContent}
-                style={{
-                  background: "white",
-                  color: "black",
-                }}
-              />
-            </div>
-          </div>
+         <div style={{ position: "absolute", left: "-9999px", top: 0 }}>
+  <div
+  id="resume-pdf"
+  style={{
+    backgroundColor: "#ffffff",
+    color: "#000000",
+    padding: "40px",
+    fontFamily: "Arial, sans-serif",
+  }}
+>
+  <div
+    dangerouslySetInnerHTML={{
+      __html: marked.parse(previewContent || ""),
+    }}
+  />
+</div>
+</div>
         
         </TabsContent>
       </Tabs>

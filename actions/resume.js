@@ -21,14 +21,14 @@ export async function saveResume({content}){
 
   try {
     const saveResume=await db.resume.upsert({
-        clerkUserId:user.id
-    }
-,{
+       where:{
+        userId:user.id
+      },
     update:{
         content,
     },
     create:{
-        clerkUserId:user.id,
+        userId:user.id,
         content,
         
     }
