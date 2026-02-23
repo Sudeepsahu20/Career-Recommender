@@ -5,7 +5,7 @@ import Link from 'next/link';
 import React from 'react'
 import CoverLetterList from './_components/cover-letter-list';
 
-export const dynamic = "force-dynamic";
+
 
 const AiCoverLettersPage = async() => {
   const coverLetters=await getCoverLetters();

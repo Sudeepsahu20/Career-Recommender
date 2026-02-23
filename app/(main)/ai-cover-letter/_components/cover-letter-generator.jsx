@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import useFetch from "@/hooks/useFetch";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
@@ -101,7 +102,7 @@ const CoverLetterGenerator = () => {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="jobDescription">Job Description</Label>
-                <Input
+                <Textarea
                   placeholder="Paste the job description here..."
                   id="jobDescription"
                   {...register("jobDescription")}
