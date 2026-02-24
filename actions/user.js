@@ -1,7 +1,6 @@
 'use server'
 import { db } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server"
-import { DemandLevel, MarketOutLook } from "@prisma/client";
 import { generateAiInsights } from "./dashboard";
 
 export async function updateUser(data) {
@@ -34,7 +33,7 @@ export async function updateUser(data) {
         if (!industryInsight) {
          const insights=await generateAiInsights(data.industry);
         
-                industryInsight= await db.industryInsight.create({
+                industryInsight= await tx.industryInsight.create({
                 data:{
                     industry:data.industry,
                     ...insights,

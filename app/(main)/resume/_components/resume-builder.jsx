@@ -1,6 +1,6 @@
 "use client";
 import MDEditor from "@uiw/react-md-editor";
-import { saveResume } from "@/actions/resume";
+import { improveProSummaryWithAi, saveResume } from "@/actions/resume";
 import { contactSchema } from "@/app/lib/schema";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import useFetch from "@/hooks/useFetch";
 import { Input } from "@base-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AlertTriangle, Download, Edit, Loader2, Monitor, Save } from "lucide-react";
+import { AlertTriangle, Download, Edit, Loader2, Monitor, Save, Sparkles } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import EntryForm from "./entry-form";
@@ -19,17 +19,21 @@ import { marked } from "marked";
 import { toast } from "sonner";
 
 
+
 const ResumeBuilder = ({ initialContent }) => {
   const [activeTab, setActiveTab] = useState("edit");
   const [resumeMode, setResumeMode] = useState("preview");
   const [previewContent,setPreviewContent]=useState(initialContent);
   const {user}=useUser();
   const [isGenerating,setIsGenerating]=useState(false);
+   
+  
 
   const {
     control,
     register,
     handleSubmit,
+    setValue,
     watch,
     formState: { errors },
   } = useForm({
@@ -47,6 +51,8 @@ const ResumeBuilder = ({ initialContent }) => {
   const formValues = watch();
 
 const {summary,skills,experience,education,projects} = formValues;
+
+
   const getContactMarkdown = () => {
     const { contactInfo } = formValues;
     const parts = [];
@@ -63,11 +69,24 @@ const {summary,skills,experience,education,projects} = formValues;
   };
 
     const {
-    loading: isSaving,
+    isLoading: isSaving,
     data: saveResult,
-    errror: saveError,
+    error: saveError,
     fun: saveResumeFn,
   } = useFetch(saveResume);
+
+  const {isLoading:isSavingResult,error:summaryError,data:summaryResult,fun:saveSummaryFn}=useFetch(improveProSummaryWithAi);
+
+  useEffect(() => {
+  if (summaryResult) {
+    setValue("summary", summaryResult);
+    toast.success("Professional summary created with AI");
+  }
+
+  if (summaryError) {
+    toast.error(summaryError.message);
+  }
+}, [summaryResult, summaryError]);
 
   useEffect(() => {
     if (saveResult && !isSaving) {
@@ -77,6 +96,15 @@ const {summary,skills,experience,education,projects} = formValues;
       toast.error(saveError.message || "Failed to save resume");
     }
   }, [saveResult, saveError, isSaving]);
+
+   const handleImproveSummary=async()=>{
+         await saveSummaryFn({
+          industry: watch("industry"),
+    skills: watch("skills"),
+    experience: watch("experience"),
+    bio: watch("summary"),
+        })
+   }
    
   useEffect(() => {
     if (activeTab === "edit") {
@@ -283,7 +311,25 @@ const {summary,skills,experience,education,projects} = formValues;
               {errors.summary && (
                 <p className="text-sm text-red-500">{errors.summary.message}</p>
               )}
-               <Button variant="outline">Improve with ai</Button>
+              <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={handleImproveSummary}
+              disabled={isSavingResult }
+            >
+              {isSavingResult ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Improving...
+                </>
+              ) : (
+                <>
+                  <Sparkles className="h-4 w-4 mr-2" />
+                  Improve with AI
+                </>
+              )}
+            </Button>
             </div>
 
             <div className="space-y-4">

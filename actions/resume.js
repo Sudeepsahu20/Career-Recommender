@@ -3,6 +3,7 @@ import { db } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { GoogleGenAI } from "@google/genai";
 import { revalidatePath } from "next/cache";
+import { error } from "node:console";
 
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY,
@@ -123,4 +124,73 @@ Format the response as a single paragraph without any additional text or explana
   console.error("Error improving resume:", error);
     throw new Error("Failed to improve resume");
 }
+}
+
+export async function improveProSummaryWithAi(data){
+
+   const {userId}=await auth();
+   if(!userId){
+    throw new Error("User not found");
+   }
+
+   const user=await db.user.findUnique({
+    where:{
+      clerkUserId:userId
+    }
+   })
+
+   if(!user){
+    throw new Error("User does not exist")
+   }
+
+   if(!data){
+    throw new Error('Data must not be empty');
+   }
+
+   try {
+       const response=await ai.models.generateContent({
+         model: "gemini-2.5-flash-lite",
+      contents: [
+        {
+          role: "user",
+          parts: [
+            {
+             text: `
+You are an expert resume writer and career coach.
+
+Generate a concise, professional summary for the following candidate:
+
+- Industry: ${data.industry}
+- Key Skills: ${
+  Array.isArray(data.skills)
+    ? data.skills.join(", ")
+    : data.skills || "Not specified"
+}
+- Years of Experience: ${data.experience || "Not specified"}
+- Bio / Background: ${data.bio || "Not specified"}
+
+Requirements:
+1. Write 3-4 sentences maximum — keep it little bit of large and punchy
+2. Start with a strong professional identity statement (e.g., "Results-driven software engineer with 5+ years...")
+3. Highlight top 2-3 skills most relevant to ${user.industry}
+4. Mention a key strength or value the candidate brings to employers
+5. Use industry-specific keywords for ATS optimization
+6. Avoid buzzwords like "passionate", "hardworking", "team player"
+7. Write in third-person implied style (no "I" or "my")
+
+Return ONLY the summary paragraph. No labels, no explanations, no bullet points.`
+            }
+            ]
+        }]
+       })
+
+       const result= response.text?.trim();
+       if(!result){
+              throw new error("AI Returned empty response");
+       }
+   return result;
+   } catch (error) {
+      console.error("Error improving professional summary:", error);
+    throw new Error("Failed to improve professional summary");
+   }
 }
